@@ -61,6 +61,10 @@ interface CreateNoteData {
   content: string;
   tag: NoteTag;
 }
+interface AuthData {
+  email: string;
+  password: string;
+}
 export const createNote = async (
   note: CreateNoteData
 ) => {
@@ -83,13 +87,10 @@ export const deleteNote = async (
   return data;
 };
 export const register = async (
-  body: {
-    email: string;
-    password: string;
-  }
+  body: AuthData
 ) => {
   const { data } =
-    await api.post(
+    await api.post<User>(
       '/auth/register',
       body
     );
@@ -98,13 +99,10 @@ export const register = async (
 };
 
 export const login = async (
-  body: {
-    email: string;
-    password: string;
-  }
+  body: AuthData
 ) => {
   const { data } =
-    await api.post(
+    await api.post<User>(
       '/auth/login',
       body
     );
@@ -119,7 +117,7 @@ export const logout = async () => {
 export const checkSession =
   async () => {
     const { data } =
-      await api.get(
+      await api.get<User | null>(
         '/auth/session'
       );
 
@@ -128,7 +126,9 @@ export const checkSession =
 
 export const getMe = async () => {
   const { data } =
-    await api.get('/users/me');
+    await api.get<User>(
+      '/users/me'
+    );
 
   return data;
 };
@@ -137,7 +137,7 @@ export const updateMe = async (
   body: Partial<User>
 ) => {
   const { data } =
-    await api.patch(
+    await api.patch<User>(
       '/users/me',
       body
     );
